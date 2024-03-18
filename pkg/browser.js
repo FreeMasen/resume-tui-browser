@@ -182,8 +182,6 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbg_canvasSizeW_596017ea4e8a3bbb = typeof canvasSizeW == 'function' ? canvasSizeW : notDefined('canvasSizeW');
-    imports.wbg.__wbg_canvasSizeH_ffa0d897531664d0 = typeof canvasSizeH == 'function' ? canvasSizeH : notDefined('canvasSizeH');
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
@@ -202,6 +200,8 @@ function __wbg_get_imports() {
             wasm.__wbindgen_free(deferred0_0, deferred0_1, 1);
         }
     };
+    imports.wbg.__wbg_canvasSizeW_596017ea4e8a3bbb = typeof canvasSizeW == 'function' ? canvasSizeW : notDefined('canvasSizeW');
+    imports.wbg.__wbg_canvasSizeH_ffa0d897531664d0 = typeof canvasSizeH == 'function' ? canvasSizeH : notDefined('canvasSizeH');
     imports.wbg.__wbg_log_5bb5f88f245d7762 = function(arg0) {
         console.log(getObject(arg0));
     };
