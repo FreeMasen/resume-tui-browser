@@ -5,12 +5,6 @@ use ratatui_wrapper::Terminal;
 use resume_tui::{App, Event};
 use wasm_bindgen::prelude::*;
 
-extern crate wee_alloc;
-
-// Use `wee_alloc` as the global allocator.
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 mod ratatui_wrapper;
 
 static mut TERMINAL: OnceLock<RatatTerm<Terminal>> = OnceLock::new();
@@ -37,7 +31,7 @@ pub fn run(ch_width: u16, line_height: u16) -> Result<(), JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn event(event: u32) -> Result<(), JsValue> {
+pub fn event(event: u8) -> Result<(), JsValue> {
     web_sys::console::log_1(&JsValue::from_str(&format!("event {event}")));
     let Some(app) = (unsafe { APP.get_mut() }) else {
         web_sys::console::log_1(&JsValue::from_str("no APP!"));
@@ -54,6 +48,7 @@ pub fn event(event: u32) -> Result<(), JsValue> {
 }
 
 fn handle_event(event: u8, app: &mut App) -> Result<(), JsValue> {
+    web_sys::console::log_1(&JsValue::from_str(&format!("handle_event: {event}")));
     let ev = match event {
         1 => Event::Up,
         2 => Event::Down,

@@ -31,7 +31,7 @@
     <body>
         <div id = "terminal"></div>
         <script type="module">
-            import init from "/pkg/browser.js";
+            import init from "./pkg/browser.js";
             Promise.sleep = (ms) => {
                 return new Promise(r => setTimeout(r, ms || 100));
             }
@@ -96,33 +96,39 @@
                     console.log("no app!!!");
                     return;
                 }
+                let arg = 0;
                 switch (ev.key) {
                     case "ArrowUp":
                         console.log("up!");
-                        app.event(1);
+                        // app.event(1);
+                        arg = 1;
                         break;
                     case "ArrowDown":
                         console.log("down!");
-                        app.event(2);
+                        // app.event(2);
+                        arg = 2
                         break;
                     case "ArrowLeft":
                         console.log("left!");
-                        app.event(3);
+                        // app.event(3);
+                        arg = 3
                         break;
                     case "Enter":
                     case "ArrowRight":
                         console.log("right!");
-                        app.event(4);
+                        // app.event(4);
+                        arg = 4;
                         break;
                     default:
                         console.warn("Unknown key:", ev.code);
                         break;
                 }
-                app.event(0);
+                console.log("calling app.event with arg", arg);
+                app.event(arg, arg);
                 return false;
             })
             
-            init("/pkg/browser_bg.wasm").then(async a => {
+            init("./pkg/browser_bg.wasm").then(async a => {
                 console.log("setting canvas size");
                 app = a;
                 console.log("sleeping");
@@ -130,7 +136,7 @@
                 console.log("running app");
                 app.run(Math.ceil(0), Math.ceil(0));
                 await Promise.sleep(1);
-                app.event(0);
+                app.event(1, 1);
             }).catch(console.error);
             
         </script>
