@@ -2,11 +2,7 @@ use ratatui::layout::Size;
 use ratatui::style::Modifier;
 use wasm_bindgen::prelude::*;
 
-pub struct Terminal {
-    pub id: &'static str,
-    pub ch_width: u16,
-    pub line_height: u16,
-}
+pub struct Terminal;
 
 #[wasm_bindgen]
 extern "C" {

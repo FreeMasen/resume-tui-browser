@@ -12,8 +12,10 @@
                 width: 100%;
                 height: 100%;
                 display: flex;
+                flex-flow: column;
+                align-items: center;
             } 
-            #terminal {
+            #term-container {
                 margin: 5px auto;
                 margin-top: 5px;
                 margin-left: auto;
@@ -26,17 +28,72 @@
             .xterm-char-measure-element {
                 display: hidden;
             }
+            #controls {
+                display: grid;
+                width: 100px;
+                height: 100px;
+                grid-template-rows: repeat(3, 1fr);
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-areas:
+                    ". u ."
+                    "l . r"
+                    ". d .";
+            }
+            #up {
+                grid-area: u;
+            }
+            #left {
+                grid-area: l;
+            }
+            #right {
+                grid-area: r;
+            }
+            #down {
+                grid-area: d;
+            }
+            button {
+                border-radius: 50%;
+                border-color: #90ee90;
+                background-color: #000;
+                color: #90EE90;
+            }
         </style>
     </head>
     <body>
-        <div id = "terminal"></div>
+        <div id="term-container">
+            <div id = "terminal"></div>
+        </div>
+        <div id="controls">
+            <button type="button" id="up">^</button>
+            <button type="button" id="down">v</button>
+            <button type="button" id="left"><</button>
+            <button type="button" id="right">></button>
+        </div>
         <script type="module">
-            import init from "./pkg/browser.js";
+            import init, * as app from "./browser.js";
             Promise.sleep = (ms) => {
                 return new Promise(r => setTimeout(r, ms || 100));
             }
-            let app;
-            /** @type HTMLCanvasElement */
+            const Event = Object.freeze({
+                up: 1,
+                down: 2,
+                left: 3,
+                right: 4,
+            })
+            // let app;
+            let eventHandler = eventId => {
+                console.log("eventHandler")
+                if (!app) {
+                    return console.warn("App not yet initialized");
+                }
+                console.log("calling app.event with arg", eventId);
+                app.event(eventId);
+            }
+            document.getElementById("up").addEventListener("click", () => eventHandler(Event.up));
+            document.getElementById("left").addEventListener("click", () => eventHandler(Event.left));
+            document.getElementById("right").addEventListener("click", () => eventHandler(Event.right));
+            document.getElementById("down").addEventListener("click", () => eventHandler(Event.down));
+            
             let canvas = document.getElementById("terminal");
             window.canvasSizeW = function () {
                 return 100;
@@ -91,52 +148,33 @@
             window.addEventListener("keydown", ev => {
                 ev.stopPropagation();
                 ev.stopImmediatePropagation();
-                console.log(ev);
-                if (!app) {
-                    console.log("no app!!!");
-                    return;
-                }
                 let arg = 0;
                 switch (ev.key) {
                     case "ArrowUp":
-                        console.log("up!");
-                        // app.event(1);
-                        arg = 1;
+                        arg = Event.up;
                         break;
                     case "ArrowDown":
-                        console.log("down!");
-                        // app.event(2);
-                        arg = 2
+                        arg = Event.down;
                         break;
                     case "ArrowLeft":
-                        console.log("left!");
-                        // app.event(3);
-                        arg = 3
+                        arg = Event.left;
                         break;
                     case "Enter":
                     case "ArrowRight":
-                        console.log("right!");
-                        // app.event(4);
-                        arg = 4;
+                        arg = Event.right;
                         break;
                     default:
                         console.warn("Unknown key:", ev.code);
                         break;
                 }
-                console.log("calling app.event with arg", arg);
-                app.event(arg, arg);
+                eventHandler(arg);
                 return false;
-            })
+            });
             
-            init("./pkg/browser_bg.wasm").then(async a => {
-                console.log("setting canvas size");
-                app = a;
-                console.log("sleeping");
-                await Promise.sleep(500);
+            init("./browser_bg.wasm").then(async () => {
                 console.log("running app");
-                app.run(Math.ceil(0), Math.ceil(0));
-                await Promise.sleep(1);
-                app.event(1, 1);
+                app.run();
+                app.event(1);
             }).catch(console.error);
             
         </script>

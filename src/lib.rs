@@ -11,16 +11,11 @@ static mut TERMINAL: OnceLock<RatatTerm<Terminal>> = OnceLock::new();
 static mut APP: OnceLock<App> = OnceLock::new();
 
 #[wasm_bindgen]
-pub fn run(ch_width: u16, line_height: u16) -> Result<(), JsValue> {
+pub fn run() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
     log::set_boxed_logger(Box::new(Log)).unwrap();
     log::set_max_level(log::LevelFilter::Trace);
-    let be = ratatui_wrapper::Terminal {
-        id: "terminal",
-        ch_width,
-        line_height,
-    };
-    let terminal = ratatui::Terminal::new(be).unwrap();
+    let terminal = ratatui::Terminal::new(ratatui_wrapper::Terminal).unwrap();
     unsafe {
         TERMINAL
             .set(terminal)

@@ -26,9 +26,13 @@ jobs:
       - name: wasm-pack-action
         uses: jetli/wasm-pack-action@v0.4.0
       - name: Build pkg
-        run: wasm-pack build --target web
+        run: >-
+          wasm-pack build --target web --no-pack --release
       - name: repack
-        run: mkdir ./public && cp ./index.html ./public && mkdir ./public/pkg && cp ./pkg/* ./public/pkg
+        run: >-
+          ls ./ &&
+          rm ./pkg/.gitignore
+          && cp ./pkg/* ./public
       - uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
